@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masukkan URL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            text-align: center;
+        }
+        #table-container {
+            display: none;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #search-input {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Masukkan URL</h1>
+        <input type="text" id="url" placeholder="Masukkan URL" value="https://testingalpro.alwaysdata.net/api/getcoffee.php">
+        <button id="fetchButton" onclick="fetchData()">Ambil Data</button>
+        <div id="table-container">
+            <input type="text" id="search-input" placeholder="Cari...">
+            <select id="sort-select">
+                <option value="default">Urutan Default</option>
+                <option value="name">Nama</option>
+                <option value="price">Harga</option>
+                <!-- Tambahkan opsi untuk kolom lain jika diperlukan -->
+            </select>
+            <table id="data-table"></table>
+        </div>
+    </div>
+
+    <script>
+        // Kode JavaScript yang Anda sediakan
+        function fetchData() {
+          const urlInput = document.getElementById('url').value;
+          const tableContainer = document.getElementById('table-container');
+          const dataTable = document.getElementById('data-table');
+
+          // Buat objek AJAX
+          const xhr = new XMLHttpRequest();
+          
+          // Atur fungsi penanganan ketika permintaan AJAX selesai
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              // Konversi JSON yang diterima ke objek JavaScript
+              const data = JSON.parse(xhr.responseText);
+
+              // Hapus semua baris tabel sebelum menambahkan yang baru
+              dataTable.innerHTML = '';
+
+              // Buat header tabel
+              const headerRow = document.createElement('tr');
+              for (const key in data[0]) {
+                if (data[0].hasOwnProperty(key)) {
+                  const headerCell = document.createElement('th');
+                  headerCell.textContent = key;
+                  headerRow.appendChild(headerCell);
+                }
+              }
+              dataTable.appendChild(headerRow);
+
+              // Tambahkan data ke tabel
+              data.forEach(function(item) {
+                const dataRow = document.createElement('tr');
+                for (const key in item) {
+                  if (item.hasOwnProperty(key)) {
+                    const dataCell = document.createElement('td');
+                    dataCell.textContent = item[key];
+                    dataRow.appendChild(dataCell);
+                  }
+                }
+                dataTable.appendChild(dataRow);
+              });
+
+              // Tampilkan tabel
+              tableContainer.style.display = 'block';
+            }
+          };
+
+          // Kirim permintaan GET ke URL yang diinputkan
+          xhr.open('GET', urlInput, true);
+          xhr.send();
+        }
+    </script>
+</body>
+</html>
+
+   
+
